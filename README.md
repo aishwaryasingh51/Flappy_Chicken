@@ -4,8 +4,8 @@
 
 Welcome to **Flappy Chicken**, a modern, high-fidelity reimagining of the classic arcade challenge. Built with pure vanilla JavaScript and love, this game brings smooth performance, procedural graphics, and a whole lot of clucking fun to your browser.
 
-▶️ [Play it online](https://aishwaryasingh51.github.io/Flappy_Chicken/)
-![Flappy Chicken screenshot](https://github.com/aishwaryasingh51/Flappy_Chicken/blob/main/screenshot.png)
+<h2>▶️ <a href="https://aishwaryasingh51.github.io/Flappy_Chicken/">Play it online</a></h2>
+<img src="https://github.com/aishwaryasingh51/Flappy_Chicken/blob/main/screenshot.png" alt="Flappy Chicken screenshot" width="400"/>
 ## ✨ Features
 
 *   **🎨 Procedural Art**: No external image assets! The chicken, pipes, and city skyline are all drawn in real-time using the HTML5 Canvas API.
