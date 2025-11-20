@@ -90,13 +90,9 @@ const score = {
     draw: function () {
         if (state.current == state.game) {
             scoreDisplay.innerText = this.value;
-            scoreDisplay.style.display = 'block';
         } else if (state.current == state.over) {
-            scoreDisplay.style.display = 'none'; // Hide during game over
             finalScoreEl.innerText = this.value;
             bestScoreEl.innerText = this.best;
-        } else {
-            scoreDisplay.style.display = 'none'; // Hide on start screen
         }
     },
 
@@ -546,28 +542,16 @@ const powerups = {
 
     spawn: function () {
         // Check for pipes at the spawn location (canvas.width)
-        // We want to spawn in the gap if there is a pipe, but with clearance
+        // We want to spawn in the gap if there is a pipe
         let spawnY = 0;
-        const pillHeight = 15;
-        const clearance = 25; // Minimum distance from pipes
         
         // Find the last pipe
         const lastPipe = pipes.position[pipes.position.length - 1];
         
-        // If a pipe is near the right edge (within 100px), spawn inside its gap with clearance
+        // If a pipe is near the right edge (within 100px), spawn inside its gap
         if (lastPipe && lastPipe.x > canvas.width - 100) {
-             // Center of the gap with clearance from top and bottom pipes
-             const gapTop = lastPipe.y + pipes.h;
-             const gapBottom = lastPipe.y + pipes.h + pipes.gap;
-             const safeGapSize = pipes.gap - (clearance * 2) - pillHeight;
-             
-             if (safeGapSize > 0) {
-                 // Spawn in safe zone (center of gap with clearance)
-                 spawnY = gapTop + clearance + (safeGapSize / 2);
-             } else {
-                 // Gap too small, spawn in center screen instead
-                 spawnY = canvas.height / 2;
-             }
+             // Center of the gap
+             spawnY = lastPipe.y + pipes.h + (pipes.gap / 2);
         } else {
             // No pipe near edge, spawn randomly in safe zone
             const center = canvas.height / 2;
@@ -585,8 +569,8 @@ const powerups = {
     },
 
     update: function (timeScale) {
-        // Spawning logic - only spawn after score >= 5
-        if (state.current == state.game && score.value >= 5) {
+        // Spawning logic
+        if (state.current == state.game) {
             this.spawnTimer += 16.67 * timeScale; // Approx ms
             if (this.spawnTimer > 10000) { // Spawn every 10 seconds
                 this.spawn();
@@ -722,36 +706,14 @@ const bg = {
             });
         }
 
-        // Init Cityscape - Sparse buildings with gaps and predetermined windows
+        // Init Cityscape - MUCH taller buildings for visibility
         let x = 0;
-        while (x < canvas.width + 200) { // Extend past screen to prevent pop-in
-            let w = 40 + Math.random() * 60; // 40-100px wide
-            let h = 150 + Math.random() * 150; // 150-300px tall
-            
-            // Generate fixed window positions for this building
-            let windows = this.generateWindows(w, h);
-            
-            this.buildings.push({ x: x, w: w, h: h, windows: windows });
-            x += w + (30 + Math.random() * 50); // Add 30-80px gap between buildings
+        while (x < canvas.width + 100) {
+            let w = 30 + Math.random() * 50;
+            let h = 150 + Math.random() * 150; // Increased from 50-100 to 150-300
+            this.buildings.push({ x: x, w: w, h: h });
+            x += w;
         }
-    },
-    
-    generateWindows: function(buildingW, buildingH) {
-        // Generate 5-10 fixed window positions
-        const numWindows = 5 + Math.floor(Math.random() * 6); // 5-10 windows
-        const windows = [];
-        const margin = 8;
-        
-        for (let i = 0; i < numWindows; i++) {
-            const windowW = 8 + Math.random() * 4; // 8-12px wide
-            const windowH = 10 + Math.random() * 6; // 10-16px tall
-            const wx = margin + Math.random() * (buildingW - windowW - margin * 2);
-            const wy = margin + Math.random() * (buildingH - windowH - margin * 2);
-            
-            windows.push({ x: wx, y: wy, w: windowW, h: windowH });
-        }
-        
-        return windows;
     },
 
     update: function (timeScale) {
@@ -767,14 +729,11 @@ const bg = {
                 b.x -= 0.5 * timeScale;
             });
 
-            // Recycle buildings - add gap to prevent pop-in
-            if (this.buildings[0].x + this.buildings[0].w < -50) {
+            // Recycle buildings
+            if (this.buildings[0].x + this.buildings[0].w < 0) {
                 let first = this.buildings.shift();
                 let last = this.buildings[this.buildings.length - 1];
-                first.w = 40 + Math.random() * 60; // Randomize width
-                first.h = 150 + Math.random() * 150; // Randomize height
-                first.windows = this.generateWindows(first.w, first.h); // Generate new windows
-                first.x = last.x + last.w + (30 + Math.random() * 50); // Add gap
+                first.x = last.x + last.w;
                 this.buildings.push(first);
             }
         }
@@ -801,26 +760,12 @@ const bg = {
         // Fireworks (Behind buildings)
         fireworks.draw();
 
-        // Cityscape (Silhouette) - Dark buildings with sky-reflecting windows
+        // Cityscape (Silhouette) - Dark buildings for visibility
+        ctx.fillStyle = "rgba(50, 50, 50, 0.8)";
+
         let groundY = canvas.height;
         this.buildings.forEach(b => {
-            // Draw building body
-            ctx.fillStyle = "rgba(50, 50, 50, 0.8)";
             ctx.fillRect(b.x, groundY - b.h, b.w, b.h);
-            
-            // Draw windows from stored positions (no random - prevents shimmering)
-            ctx.fillStyle = "rgba(79, 172, 254, 0.5)"; // Sky blue with transparency
-            
-            if (b.windows) {
-                b.windows.forEach(win => {
-                    ctx.fillRect(
-                        b.x + win.x,
-                        groundY - b.h + win.y,
-                        win.w,
-                        win.h
-                    );
-                });
-            }
         });
     }
 };
