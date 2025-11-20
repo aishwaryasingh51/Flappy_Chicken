@@ -1,0 +1,319 @@
+:root {
+    --primary-color: #FFD700;
+    --accent-color: #FF6B6B;
+    --text-color: #FFFFFF;
+    --bg-gradient-start: #4FACFE;
+    --bg-gradient-end: #00F2FE;
+    --font-main: 'Outfit', sans-serif;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --shadow-soft: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    font-family: var(--font-main);
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 480px;
+    /* Mobile-first constraint for desktop */
+    max-height: 854px;
+    background: rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* Let clicks pass through to canvas/game unless on buttons */
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    transition: opacity 0.3s ease;
+    pointer-events: auto;
+}
+
+.screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.screen.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+h1 {
+    font-size: 3rem;
+    color: var(--primary-color);
+    text-shadow: 2px 2px 0px #000;
+    margin-bottom: 2rem;
+    text-align: center;
+    animation: float 3s ease-in-out infinite;
+}
+
+h2 {
+    font-size: 2.5rem;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+}
+
+.key-badge {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 900;
+    color: var(--primary-color);
+}
+
+.key-badge.circle {
+    border-radius: 50%;
+    padding: 1rem;
+    width: 60px;
+    height: 60px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0.5rem;
+}
+
+/* Mobile/Desktop Visibility */
+.mobile-msg {
+    display: none;
+}
+
+.desktop-msg {
+    display: block;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .mobile-msg {
+        display: block !important;
+    }
+
+    .desktop-msg {
+        display: none !important;
+    }
+}
+
+.score-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 2rem;
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-soft);
+}
+
+.score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #DDD;
+    margin-bottom: 0.5rem;
+}
+
+.value {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--text-color);
+}
+
+button {
+    background: var(--primary-color);
+    color: #333;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: 900;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    font-family: var(--font-main);
+    box-shadow: 0 4px 0 #B8860B;
+}
+
+button:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #B8860B;
+}
+
+#hud {
+    position: absolute;
+    top: 10%;
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+}
+
+#score-display {
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--text-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hidden {
+    display: none !important;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes score-bump {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes score-bump-big {
+    0% {
+        transform: scale(1);
+        color: #FFD700;
+    }
+
+    50% {
+        transform: scale(1.5);
+        color: #FFF;
+    }
+
+    100% {
+        transform: scale(1);
+        color: #FFF;
+    }
+}
+
+@keyframes shine {
+    0% {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 0 0 0 rgba(255, 255, 255, 0);
+    }
+
+    50% {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+
+    100% {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+.shine-effect {
+    animation: shine 3s infinite ease-in-out;
+}
+
+/* High Score Text Animation */
+.jumping-letter {
+    display: inline-block;
+    position: relative;
+    animation: letter-hop 0.6s infinite alternate ease-in-out;
+    font-weight: 900;
+    /* Make it extra bold */
+}
+
+@keyframes letter-hop {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        transform: translateY(-15px) scale(1.1);
+    }
+}
+
+/* Achievement Notification */
+.achievement-notif {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: #FFF;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 900;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    animation: slideDown 0.5s ease-out;
+    pointer-events: none;
+}
+
+.achievement-notif.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translate(-50%, -100%);
+    }
+
+    to {
+        transform: translate(-50%, 0);
+    }
+}

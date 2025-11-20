@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flappy Chicken</title>
+    <meta name="description" content="A premium Flappy Bird inspired game.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+
+        <div id="ui-layer">
+            <div id="start-screen" class="screen active">
+                <h1>Flappy Chicken</h1>
+                <p class="desktop-msg">Press <span class="key-badge">SPACE</span> to Flap</p>
+                <p class="mobile-msg hidden"> <span class="key-badge circle">Tap</span> to Flap</p>
+            </div>
+
+            <div id="game-over-screen" class="screen hidden">
+                <h2 id="game-over-title">Game Over</h2>
+                <div class="score-card">
+                    <div class="score-item">
+                        <span class="label">Score</span>
+                        <span id="final-score" class="value">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="label">Best</span>
+                        <span id="best-score" class="value">0</span>
+                    </div>
+                </div>
+                <div id="medal-container"></div>
+                <button id="restart-btn">Play Again</button>
+            </div>
+
+            <div id="hud" class="hidden">
+                <div id="score-display">0</div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
