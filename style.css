@@ -32,10 +32,9 @@ body {
 #game-container {
     position: relative;
     width: 100%;
-    height: 100%;
     max-width: 480px;
-    /* Mobile-first constraint for desktop */
-    max-height: 854px;
+    aspect-ratio: 19.5 / 9;
+    /* Modern smartphone aspect ratio */
     background: rgba(0, 0, 0, 0.1);
     box-shadow: var(--shadow-soft);
     overflow: hidden;
