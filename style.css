@@ -35,8 +35,8 @@ body {
     height: 100%;
     max-width: 100%;
     max-height: 100%;
-    aspect-ratio: 9 / 19.5;
-    /* iPhone portrait aspect ratio */
+    aspect-ratio: 1206 / 2622;
+    /* Exact aspect ratio from user screenshot */
     background: rgba(0, 0, 0, 0.1);
     box-shadow: var(--shadow-soft);
     overflow: hidden;
