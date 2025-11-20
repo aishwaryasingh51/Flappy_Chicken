@@ -4,7 +4,7 @@
 
 Welcome to **Flappy Chicken**, a modern, high-fidelity reimagining of the classic arcade challenge. Built with pure vanilla JavaScript and love, this game brings smooth performance, procedural graphics, and a whole lot of clucking fun to your browser.
 
-![Flappy Chicken Screenshot](file:///Users/Jimmy/Documents/Flappy_Chicken/screenshot.png)
+▶️ Play it online: https://aishwaryasingh51.github.io/Flappy_Chicken/
 
 ## ✨ Features
 
