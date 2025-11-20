@@ -31,11 +31,12 @@ body {
 
 #game-container {
     position: relative;
-    width: 100%;
+    width: auto;
     height: 100%;
-    max-width: 480px;
-    /* Mobile-first constraint for desktop */
-    max-height: 854px;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 9 / 19.5;
+    /* iPhone portrait aspect ratio */
     background: rgba(0, 0, 0, 0.1);
     box-shadow: var(--shadow-soft);
     overflow: hidden;
@@ -84,18 +85,20 @@ canvas {
 }
 
 h1 {
-    font-size: 3rem;
+    font-size: 2.5rem;
+    /* Reduced from 3rem */
     color: var(--primary-color);
     text-shadow: 2px 2px 0px #000;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     text-align: center;
     animation: float 3s ease-in-out infinite;
 }
 
 h2 {
-    font-size: 2.5rem;
+    font-size: 2rem;
+    /* Reduced from 2.5rem */
     color: var(--text-color);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .key-badge {
@@ -196,7 +199,8 @@ button:active {
 }
 
 #score-display {
-    font-size: 4rem;
+    font-size: 3rem;
+    /* Reduced from 4rem */
     font-weight: 900;
     color: var(--text-color);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
