@@ -66,6 +66,8 @@ function resetGame() {
     state.celebrating = false;
     gameSpeed = 1.0;
     powerups.reset();
+    powerups.pipesPassed = 0; // Reset pipe counter
+    powerups.nextSpawnAt = 5; // First spawn after 5th pipe
 
     gameOverScreen.classList.add('hidden');
     gameOverScreen.classList.remove('active');
@@ -323,15 +325,12 @@ const pipes = {
     },
 
     spawn: function () {
-        // Progressive Difficulty
-        // Start with pipes centered vertically
-        // As score increases, increase the range of possible y positions
-
+        // Progressive Difficulty with slightly reduced range for fairness
         const center = canvas.height / 2;
-        const maxOffset = canvas.height / 3; // Maximum deviation from center
+        const maxOffset = canvas.height / 4; // Reduced from 1/3 to 1/4 for fairer placement
 
-        // Difficulty factor: 0.0 to 1.0 based on score (caps at score 50)
-        const difficulty = Math.min(score.value / 50, 1.0);
+        // Difficulty factor: 0.3 to 1.0 based on score (caps at score 40)
+        const difficulty = 0.3 + Math.min(score.value / 40, 1.0) * 0.7;
 
         // Initial range is small (centered), grows with difficulty
         const range = 50 + (maxOffset * difficulty);
@@ -344,7 +343,8 @@ const pipes = {
 
         this.position.push({
             x: canvas.width,
-            y: pipeY
+            y: pipeY,
+            passed: false
         });
     },
 
@@ -367,10 +367,21 @@ const pipes = {
             }
 
             // Score Update
-            if (p.x + this.w < chicken.x - chicken.radius && !p.passed) {
-                score.value += 1;
-                score.draw();
+            // Only count pipes that haven't been passed yet
+            if (!p.passed && chicken.x > p.x + this.w) {
                 p.passed = true;
+                score.value++;
+
+                // Track for power-up spawning
+                powerups.pipesPassed++;
+
+                // Spawn power-up if we've reached the threshold
+                if (powerups.pipesPassed >= powerups.nextSpawnAt) {
+                    powerups.spawn();
+                }
+
+                score.draw();
+                // achievements.check(score.value); // Assuming achievements is defined elsewhere
 
                 let isHighScore = false;
                 // High Score Check
@@ -542,7 +553,8 @@ const particles = {
 // Power-up System
 const powerups = {
     items: [],
-    spawnTimer: 0,
+    pipesPassed: 0, // Track pipes passed for spawning
+    nextSpawnAt: 5, // First spawn after 5th pipe
 
     spawn: function () {
         // Check for pipes at the spawn location (canvas.width)
@@ -582,17 +594,13 @@ const powerups = {
             w: 30,
             h: 15
         });
+        
+        // Set next spawn: randomly 5-9 pipes from now (avg ~7)
+        this.nextSpawnAt = this.pipesPassed + 5 + Math.floor(Math.random() * 5);
     },
 
     update: function (timeScale) {
-        // Spawning logic - only spawn after score >= 5
-        if (state.current == state.game && score.value >= 5) {
-            this.spawnTimer += 16.67 * timeScale; // Approx ms
-            if (this.spawnTimer > 10000) { // Spawn every 10 seconds
-                this.spawn();
-                this.spawnTimer = 0;
-            }
-        }
+        // No timer-based spawning anymore - it's now handled by pipe passing
 
         for (let i = this.items.length - 1; i >= 0; i--) {
             let p = this.items[i];
