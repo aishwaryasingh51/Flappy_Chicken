@@ -4,8 +4,7 @@
 
 Welcome to **Flappy Chicken**, a modern, high-fidelity reimagining of the classic arcade challenge. Built with pure vanilla JavaScript and love, this game brings smooth performance, procedural graphics, and a whole lot of clucking fun to your browser.
 
-![Flappy Chicken Screenshot](https://via.placeholder.com/800x450?text=Game+Screenshot+Placeholder) 
-*(Replace this link with a real screenshot of your game!)*
+![Flappy Chicken Screenshot](file:///Users/Jimmy/Documents/Flappy_Chicken/screenshot.png)
 
 ## ✨ Features
 
