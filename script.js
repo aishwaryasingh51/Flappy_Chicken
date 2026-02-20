@@ -5,6 +5,12 @@
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 
+// Cached DOM Elements
+const gameContainer = document.getElementById('game-container');
+const matrixOverlay = document.getElementById('matrix-overlay');
+const neoTextDisplay = document.getElementById('neo-text');
+const medalContainer = document.getElementById('medal-container');
+
 // Game State
 let frames = 0;
 let gameSpeed = 1.0;
@@ -73,14 +79,14 @@ function resetGame() {
     gameOverScreen.classList.remove('active');
     startScreen.classList.remove('hidden');
     startScreen.classList.add('active');
-    
+
     // Show HUD in Get Ready state
     hud.classList.remove('hidden');
-    
+
     // Reset Visuals
-    document.getElementById('matrix-overlay').classList.remove('active');
-    document.getElementById('neo-text').classList.remove('animate');
-    
+    matrixOverlay.classList.remove('active');
+    neoTextDisplay.classList.remove('animate');
+
     frames = 0;
 }
 
@@ -145,7 +151,7 @@ const chicken = {
             ctx.lineTo(-15, 18); // Bottom edge
             ctx.quadraticCurveTo(-5, 15, 0, 12); // Bottom curve back to body
             ctx.fill();
-            
+
             // Collar
             ctx.beginPath();
             ctx.moveTo(2, -5);
@@ -462,7 +468,6 @@ function showGameOverScreen() {
     }
 
     // Medals
-    const medalContainer = document.getElementById('medal-container');
     medalContainer.innerHTML = '';
 
     let medal = null;
@@ -562,31 +567,31 @@ const powerups = {
         let spawnY = 0;
         const pillHeight = 15;
         const clearance = 25; // Minimum distance from pipes
-        
+
         // Find the last pipe
         const lastPipe = pipes.position[pipes.position.length - 1];
-        
+
         // If a pipe is near the right edge (within 100px), spawn inside its gap with clearance
         if (lastPipe && lastPipe.x > canvas.width - 100) {
-             // Center of the gap with clearance from top and bottom pipes
-             const gapTop = lastPipe.y + pipes.h;
-             const gapBottom = lastPipe.y + pipes.h + pipes.gap;
-             const safeGapSize = pipes.gap - (clearance * 2) - pillHeight;
-             
-             if (safeGapSize > 0) {
-                 // Spawn in safe zone (center of gap with clearance)
-                 spawnY = gapTop + clearance + (safeGapSize / 2);
-             } else {
-                 // Gap too small, spawn in center screen instead
-                 spawnY = canvas.height / 2;
-             }
+            // Center of the gap with clearance from top and bottom pipes
+            const gapTop = lastPipe.y + pipes.h;
+            const gapBottom = lastPipe.y + pipes.h + pipes.gap;
+            const safeGapSize = pipes.gap - (clearance * 2) - pillHeight;
+
+            if (safeGapSize > 0) {
+                // Spawn in safe zone (center of gap with clearance)
+                spawnY = gapTop + clearance + (safeGapSize / 2);
+            } else {
+                // Gap too small, spawn in center screen instead
+                spawnY = canvas.height / 2;
+            }
         } else {
             // No pipe near edge, spawn randomly in safe zone
             const center = canvas.height / 2;
             const range = 200;
-            spawnY = center + (Math.random() * range - range/2);
+            spawnY = center + (Math.random() * range - range / 2);
         }
-        
+
         this.items.push({
             x: canvas.width,
             y: spawnY,
@@ -594,7 +599,7 @@ const powerups = {
             w: 30,
             h: 15
         });
-        
+
         // Set next spawn: randomly 5-9 pipes from now (avg ~7)
         this.nextSpawnAt = this.pipesPassed + 5 + Math.floor(Math.random() * 5);
     },
@@ -629,20 +634,19 @@ const powerups = {
         if (type === 'snail') {
             gameSpeed = 0.5;
             chicken.isNeo = true;
-            
+
             // Visual Effects
-            document.getElementById('matrix-overlay').classList.add('active');
-            const neoText = document.getElementById('neo-text');
-            neoText.classList.remove('animate'); // Reset
-            void neoText.offsetWidth; // Trigger reflow
-            neoText.classList.add('animate');
-            
+            matrixOverlay.classList.add('active');
+            neoTextDisplay.classList.remove('animate'); // Reset
+            void neoTextDisplay.offsetWidth; // Trigger reflow
+            neoTextDisplay.classList.add('animate');
+
             // Reset after 5 seconds
             setTimeout(() => {
                 if (state.current == state.game) {
                     gameSpeed = 1.0;
                     chicken.isNeo = false;
-                    document.getElementById('matrix-overlay').classList.remove('active');
+                    matrixOverlay.classList.remove('active');
                 }
             }, 5000);
         }
@@ -652,14 +656,14 @@ const powerups = {
         for (let p of this.items) {
             if (p.type === 'snail') {
                 // Draw Pill (Red for Matrix reference)
-                ctx.fillStyle = "#FF0000"; 
+                ctx.fillStyle = "#FF0000";
                 ctx.beginPath();
                 ctx.roundRect(p.x, p.y, p.w, p.h, 10);
                 ctx.fill();
                 ctx.strokeStyle = "#800000";
                 ctx.lineWidth = 2;
                 ctx.stroke();
-                
+
                 // Matrix code effect inside? - Removed per user request
                 // ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
                 // ctx.font = "10px monospace";
@@ -735,30 +739,30 @@ const bg = {
         while (x < canvas.width + 200) { // Extend past screen to prevent pop-in
             let w = 40 + Math.random() * 60; // 40-100px wide
             let h = 150 + Math.random() * 150; // 150-300px tall
-            
+
             // Generate fixed window positions for this building
             let windows = this.generateWindows(w, h);
-            
+
             this.buildings.push({ x: x, w: w, h: h, windows: windows });
             x += w + (30 + Math.random() * 50); // Add 30-80px gap between buildings
         }
     },
-    
-    generateWindows: function(buildingW, buildingH) {
+
+    generateWindows: function (buildingW, buildingH) {
         // Generate 5-10 fixed window positions
         const numWindows = 5 + Math.floor(Math.random() * 6); // 5-10 windows
         const windows = [];
         const margin = 8;
-        
+
         for (let i = 0; i < numWindows; i++) {
             const windowW = 8 + Math.random() * 4; // 8-12px wide
             const windowH = 10 + Math.random() * 6; // 10-16px tall
             const wx = margin + Math.random() * (buildingW - windowW - margin * 2);
             const wy = margin + Math.random() * (buildingH - windowH - margin * 2);
-            
+
             windows.push({ x: wx, y: wy, w: windowW, h: windowH });
         }
-        
+
         return windows;
     },
 
@@ -815,10 +819,10 @@ const bg = {
             // Draw building body
             ctx.fillStyle = "rgba(50, 50, 50, 0.8)";
             ctx.fillRect(b.x, groundY - b.h, b.w, b.h);
-            
+
             // Draw windows from stored positions (no random - prevents shimmering)
             ctx.fillStyle = "rgba(79, 172, 254, 0.5)"; // Sky blue with transparency
-            
+
             if (b.windows) {
                 b.windows.forEach(win => {
                     ctx.fillRect(
@@ -901,31 +905,42 @@ function drawBackground(timeScale) {
 
 // Score Animation Helper
 function triggerScoreAnimation(isTen, isHighScore) {
-    const scoreEl = document.getElementById('score-display');
+    // We already have 'scoreDisplay' cached globally
 
     // Reset animation
-    scoreEl.style.animation = 'none';
-    scoreEl.offsetHeight; // Trigger reflow
+    scoreDisplay.style.animation = 'none';
+    scoreDisplay.offsetHeight; // Trigger reflow
 
     if (isHighScore) {
         // Fireworks!
         fireworks.spawn(canvas.width / 2, canvas.height / 3);
         fireworks.spawn(canvas.width / 4, canvas.height / 4);
         fireworks.spawn(3 * canvas.width / 4, canvas.height / 4);
-        scoreEl.style.color = '#FFD700'; // Gold
-        scoreEl.style.textShadow = '0 0 10px #FFD700';
+        scoreDisplay.style.color = '#FFD700'; // Gold
+        scoreDisplay.style.textShadow = '0 0 10px #FFD700';
 
         // Mark as new high score for game over screen
         state.newHighScore = true;
     }
 
     if (isTen) {
-        scoreEl.style.animation = 'score-bump-big 0.5s ease-out';
+        scoreDisplay.style.animation = 'score-bump-big 0.5s ease-out';
         particles.spawn(canvas.width / 2, 100, 15); // Confetti
     } else {
-        scoreEl.style.animation = 'score-bump 0.2s ease-out';
+        scoreDisplay.style.animation = 'score-bump 0.2s ease-out';
     }
 }
+
+// Canvas Resizing Optimization
+function resizeCanvas() {
+    canvas.width = gameContainer.clientWidth;
+    canvas.height = gameContainer.clientHeight;
+}
+
+// Initial sizing and event listener
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
 
 // Game Loop with Delta Time
 let lastTime = 0;
@@ -938,11 +953,6 @@ function loop(timestamp) {
 
     // Normalize to 60 FPS (approx 16.67ms per frame)
     const timeScale = (deltaTime / (1000 / 60)) * gameSpeed;
-
-    // Resize canvas to fit container (MUST be before drawing!)
-    const container = document.getElementById('game-container');
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
 
     // Background
     drawBackground(timeScale);
